@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { CheckCircle, Clock, Shield } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { Badge } from './ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Shield, Users, DollarSign, LogOut, CheckCircle, XCircle } from 'lucide-react';
 import { projectId } from '../utils/supabase/info';
+import { toast } from 'sonner@2.0.3';
+import logo from 'figma:asset/2978341561cf6c2a5218872dfe5a018b3a33b384.png';
 
 interface AdminPanelProps {
   accessToken: string;
@@ -93,9 +95,7 @@ export function AdminPanel({ accessToken, onBack }: AdminPanelProps) {
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-slate-100 p-2 rounded-lg">
-              <Shield className="size-6 text-slate-600" />
-            </div>
+            <img src={logo} alt="Eco.Miner" className="h-12" />
             <div>
               <h1>Admin Panel</h1>
               <p className="text-sm text-gray-600">Withdrawal Management</p>

@@ -6,10 +6,11 @@ import { Label } from './ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
-import { Coins, Video, Users, Wallet, TrendingUp, Copy, LogOut, Shield, Zap, Pause, Play, Check } from 'lucide-react';
+import { Coins, Video, Users, Wallet, TrendingUp, Copy, LogOut, Shield, Zap, Pause, Play, Check, Smartphone } from 'lucide-react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { toast } from 'sonner@2.0.3';
 import { RewardedAdModal } from './RewardedAdModal';
+import logo from 'figma:asset/2978341561cf6c2a5218872dfe5a018b3a33b384.png';
 
 interface MiningDashboardProps {
   accessToken: string;
@@ -270,9 +271,9 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
 
   if (!userData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading your mining dashboard...</p>
         </div>
       </div>
@@ -280,20 +281,18 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100">
       {/* Header */}
-      <div className="bg-white border-b shadow-sm">
+      <div className="bg-gradient-to-r from-blue-600 to-cyan-600 border-b shadow-lg">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-emerald-100 p-2 rounded-lg">
-              <Coins className="size-6 text-emerald-600" />
-            </div>
+            <img src={logo} alt="Eco.Miner" className="h-12 drop-shadow-lg" />
             <div>
-              <h1>Eco.Miner</h1>
-              <p className="text-sm text-gray-600">Welcome, {userData.name}</p>
+              <h1 className="text-white">Eco.Miner</h1>
+              <p className="text-sm text-blue-100">Welcome, {userData.name}</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={onLogout}>
+          <Button variant="ghost" size="sm" onClick={onLogout} className="text-white hover:bg-white/20">
             <LogOut className="size-4 mr-2" />
             Logout
           </Button>
@@ -302,22 +301,22 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Balance Card */}
-        <Card className="mb-6 bg-gradient-to-br from-emerald-600 to-teal-600 text-white border-0">
+        <Card className="mb-6 bg-gradient-to-br from-blue-600 to-cyan-600 text-white border-0 shadow-2xl">
           <CardHeader>
-            <CardDescription className="text-emerald-100">Total Balance</CardDescription>
-            <CardTitle className="text-4xl">${balance.toFixed(6)}</CardTitle>
+            <CardDescription className="text-blue-100">Total Balance</CardDescription>
+            <CardTitle className="text-5xl">${balance.toFixed(6)}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-2 text-emerald-100">
-              <Zap className="size-4" />
-              <span>Mining at ${userData.currentMiningRate.toFixed(6)}/sec</span>
+            <div className="flex items-center gap-2 text-blue-100 mb-4">
+              <Zap className="size-5 text-yellow-300" />
+              <span className="text-lg">Mining at ${userData.currentMiningRate.toFixed(6)}/sec</span>
             </div>
-            <div className="mt-4 flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={() => setIsMining(!isMining)}
-                className="bg-white/20 hover:bg-white/30 text-white border-0"
+                className="bg-white text-blue-600 hover:bg-blue-50 border-0"
               >
                 {isMining ? (
                   <>
@@ -332,9 +331,9 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
                 )}
               </Button>
               {isMining && (
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm bg-white/20 px-3 py-1.5 rounded-full">
                   <div className="size-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span>Active</span>
+                  <span>Mining Active</span>
                 </div>
               )}
             </div>
@@ -495,10 +494,18 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
           <TabsContent value="wallet" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Withdraw Funds</CardTitle>
-                <CardDescription>
-                  Minimum withdrawal: $100 via Ecocash
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Withdraw Funds</CardTitle>
+                    <CardDescription>
+                      Minimum withdrawal: $100
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-lg">
+                    <Smartphone className="size-5" />
+                    <span className="font-semibold">Ecocash</span>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 {!userData.canWithdraw && (
@@ -524,12 +531,16 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="ecocash">Ecocash Number</Label>
+                  <Label htmlFor="ecocash" className="flex items-center gap-2">
+                    <Smartphone className="size-4 text-orange-600" />
+                    Ecocash Number
+                  </Label>
                   <Input
                     id="ecocash"
                     value={ecocashNumber}
                     onChange={(e) => setEcocashNumber(e.target.value)}
                     placeholder="+263..."
+                    className="border-orange-200 focus:border-orange-500"
                   />
                 </div>
 
@@ -546,15 +557,18 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
                 <Button
                   onClick={handleWithdraw}
                   disabled={!userData.canWithdraw || balance < 100}
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
                   size="lg"
                 >
-                  <TrendingUp className="size-5 mr-2" />
-                  Request Withdrawal
+                  <Smartphone className="size-5 mr-2" />
+                  Withdraw via Ecocash
                 </Button>
 
-                <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-700">
-                  <p>ℹ️ Withdrawals are processed manually within 1-3 business days.</p>
+                <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-sm text-blue-900">
+                  <p className="flex items-center gap-2">
+                    <span>ℹ️</span>
+                    <span>Withdrawals are processed manually within 1-3 business days via Ecocash.</span>
+                  </p>
                 </div>
               </CardContent>
             </Card>

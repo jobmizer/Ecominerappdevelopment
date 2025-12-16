@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Coins } from 'lucide-react';
+import { createClient } from '@supabase/supabase-js';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { toast } from 'sonner';
+import logo from 'figma:asset/2978341561cf6c2a5218872dfe5a018b3a33b384.png';
 
 interface AuthScreenProps {
   onAuthSuccess: (accessToken: string, userId: string) => void;
@@ -73,7 +75,6 @@ export function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
       }
 
       // Now sign in with the created account
-      const { createClient } = await import('@supabase/supabase-js');
       const supabase = createClient(
         `https://${projectId}.supabase.co`,
         publicAnonKey
@@ -92,6 +93,7 @@ export function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     } catch (err: any) {
       console.error('Signup error:', err);
       setError(err.message || 'An error occurred during signup');
+      toast.error(err.message || 'An error occurred during signup');
     } finally {
       setIsLoading(false);
     }
@@ -107,7 +109,6 @@ export function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     const password = formData.get('signin-password') as string;
 
     try {
-      const { createClient } = await import('@supabase/supabase-js');
       const supabase = createClient(
         `https://${projectId}.supabase.co`,
         publicAnonKey
@@ -126,21 +127,20 @@ export function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     } catch (err: any) {
       console.error('Sign in error:', err);
       setError(err.message || 'An error occurred during sign in');
+      toast.error(err.message || 'An error occurred during sign in');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="bg-emerald-100 p-4 rounded-full">
-              <Coins className="size-12 text-emerald-600" />
-            </div>
+            <img src={logo} alt="Eco.Miner Logo" className="h-24" />
           </div>
-          <CardTitle>Eco.Miner</CardTitle>
+          <CardTitle>Welcome to Eco.Miner</CardTitle>
           <CardDescription>Start mining virtual USD today</CardDescription>
         </CardHeader>
         <CardContent>

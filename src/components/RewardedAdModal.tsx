@@ -14,7 +14,7 @@ export function RewardedAdModal({ open, onAdComplete, onClose }: RewardedAdModal
   const [progress, setProgress] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [canClose, setCanClose] = useState(false);
-  const AD_DURATION = 15; // 15 seconds
+  const AD_DURATION = 30; // 30 seconds
 
   useEffect(() => {
     if (!open) {

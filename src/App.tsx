@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { AuthScreen } from './components/AuthScreen';
 import { MiningDashboard } from './components/MiningDashboard';
 import { AdminPanel } from './components/AdminPanel';
+import { SplashScreen } from './components/SplashScreen';
 import { Toaster } from './components/ui/sonner';
 import { createClient } from '@supabase/supabase-js';
 import { projectId, publicAnonKey } from './utils/supabase/info';
+import { Shield } from 'lucide-react';
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -31,6 +34,9 @@ export default function App() {
           setIsAdmin(true);
         }
       }
+
+      // Hide splash screen after checking session
+      setShowSplash(false);
     };
 
     checkSession();
@@ -53,6 +59,11 @@ export default function App() {
     setIsAdmin(false);
     setShowAdminPanel(false);
   };
+
+  // Show splash screen
+  if (showSplash) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
 
   // If not authenticated, show auth screen
   if (!accessToken || !userId) {
@@ -89,8 +100,9 @@ export default function App() {
         {isAdmin && (
           <button
             onClick={() => setShowAdminPanel(true)}
-            className="fixed bottom-4 right-4 bg-slate-900 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-slate-800 transition-colors"
+            className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-3 rounded-full shadow-2xl hover:from-blue-700 hover:to-cyan-700 transition-all transform hover:scale-105 flex items-center gap-2"
           >
+            <Shield className="size-5" />
             Admin Panel
           </button>
         )}
