@@ -1,25 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Progress } from './ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { 
-  Coins, 
-  Zap, 
-  Users, 
-  Wallet, 
-  TrendingUp, 
-  Play, 
-  Pause,
-  Video,
-  Copy,
-  Check,
-  LogOut,
-} from 'lucide-react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { toast } from 'sonner@2.0.3';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Badge } from './ui/badge';
+import { Progress } from './ui/progress';
+import { Coins, Video, Users, Wallet, TrendingUp, Copy, LogOut, Shield, Zap, Pause, Play, Check } from 'lucide-react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { toast } from 'sonner@2.0.3';
+import { RewardedAdModal } from './RewardedAdModal';
 
 interface MiningDashboardProps {
   accessToken: string;
@@ -46,6 +36,7 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
   const [isMining, setIsMining] = useState(true);
   const [timeUntilReset, setTimeUntilReset] = useState(0);
   const [isWatchingAd, setIsWatchingAd] = useState(false);
+  const [showAdModal, setShowAdModal] = useState(false);
   const [referralCode, setReferralCode] = useState('');
   const [copied, setCopied] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState('100');
@@ -146,39 +137,41 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
       return;
     }
 
+    setShowAdModal(true);
+  };
+
+  // Handle ad completion
+  const handleAdComplete = async () => {
     setIsWatchingAd(true);
 
-    // Simulate ad watching (in production, this would trigger AdMob)
-    setTimeout(async () => {
-      try {
-        const response = await fetch(`${serverUrl}/watch-ad`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
+    try {
+      const response = await fetch(`${serverUrl}/watch-ad`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (response.ok) {
-          toast.success(`Mining speed boosted! +$0.000001/sec`);
-          setUserData(prev => prev ? {
-            ...prev,
-            currentMiningRate: data.newMiningRate,
-            adsWatchedToday: data.adsWatchedToday,
-          } : null);
-          setBalance(data.balance);
-        } else {
-          toast.error(data.error || 'Failed to watch ad');
-        }
-      } catch (error) {
-        console.error('Error watching ad:', error);
-        toast.error('Failed to watch ad');
-      } finally {
-        setIsWatchingAd(false);
+      if (response.ok) {
+        toast.success(`Mining speed boosted! +$0.000001/sec`);
+        setUserData(prev => prev ? {
+          ...prev,
+          currentMiningRate: data.newMiningRate,
+          adsWatchedToday: data.adsWatchedToday,
+        } : null);
+        setBalance(data.balance);
+      } else {
+        toast.error(data.error || 'Failed to watch ad');
       }
-    }, 3000); // Simulate 3 second ad
+    } catch (error) {
+      console.error('Error watching ad:', error);
+      toast.error('Failed to watch ad');
+    } finally {
+      setIsWatchingAd(false);
+    }
   };
 
   // Apply referral code
@@ -568,6 +561,13 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Rewarded Ad Modal */}
+      <RewardedAdModal
+        open={showAdModal}
+        onClose={() => setShowAdModal(false)}
+        onAdComplete={handleAdComplete}
+      />
     </div>
   );
 }
