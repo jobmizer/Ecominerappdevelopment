@@ -4,8 +4,8 @@ import { MiningDashboard } from './components/MiningDashboard';
 import { AdminPanel } from './components/AdminPanel';
 import { SplashScreen } from './components/SplashScreen';
 import { Toaster } from './components/ui/sonner';
-import { createClient } from '@supabase/supabase-js';
 import { projectId, publicAnonKey } from './utils/supabase/info';
+import { getSupabaseClient } from './utils/supabase/client';
 import { Shield } from 'lucide-react';
 
 export default function App() {
@@ -18,10 +18,7 @@ export default function App() {
   // Check for existing session on mount
   useEffect(() => {
     const checkSession = async () => {
-      const supabase = createClient(
-        `https://${projectId}.supabase.co`,
-        publicAnonKey
-      );
+      const supabase = getSupabaseClient();
 
       const { data: { session } } = await supabase.auth.getSession();
 
@@ -48,10 +45,7 @@ export default function App() {
   };
 
   const handleLogout = async () => {
-    const supabase = createClient(
-      `https://${projectId}.supabase.co`,
-      publicAnonKey
-    );
+    const supabase = getSupabaseClient();
 
     await supabase.auth.signOut();
     setAccessToken(null);

@@ -4,8 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { createClient } from '@supabase/supabase-js';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { getSupabaseClient } from '../utils/supabase/client';
 import { toast } from 'sonner';
 import logo from 'figma:asset/2978341561cf6c2a5218872dfe5a018b3a33b384.png';
 
@@ -16,6 +17,9 @@ interface AuthScreenProps {
 export function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [isResetLoading, setIsResetLoading] = useState(false);
 
   // Test server connection on mount
   useState(() => {
@@ -75,10 +79,7 @@ export function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
       }
 
       // Now sign in with the created account
-      const supabase = createClient(
-        `https://${projectId}.supabase.co`,
-        publicAnonKey
-      );
+      const supabase = getSupabaseClient();
 
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
@@ -109,10 +110,7 @@ export function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     const password = formData.get('signin-password') as string;
 
     try {
-      const supabase = createClient(
-        `https://${projectId}.supabase.co`,
-        publicAnonKey
-      );
+      const supabase = getSupabaseClient();
 
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
@@ -130,6 +128,30 @@ export function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
       toast.error(err.message || 'An error occurred during sign in');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsResetLoading(true);
+
+    try {
+      const supabase = getSupabaseClient();
+
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}`,
+      });
+
+      if (error) throw error;
+
+      toast.success('Password reset email sent! Check your inbox.');
+      setShowForgotPassword(false);
+      setResetEmail('');
+    } catch (err: any) {
+      console.error('Password reset error:', err);
+      toast.error(err.message || 'Failed to send reset email');
+    } finally {
+      setIsResetLoading(false);
     }
   };
 
@@ -180,6 +202,15 @@ export function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? 'Signing in...' : 'Sign In'}
                 </Button>
+                <div className="text-center">
+                  <button
+                    type="button"
+                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                    onClick={() => setShowForgotPassword(true)}
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
               </form>
             </TabsContent>
             
@@ -229,6 +260,39 @@ export function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
           </Tabs>
         </CardContent>
       </Card>
+
+      <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Forgot Password</DialogTitle>
+            <DialogDescription>
+              Enter your email below and we'll send you a password reset link.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="reset-email">Email</Label>
+              <Input
+                id="reset-email"
+                name="reset-email"
+                type="email"
+                placeholder="you@example.com"
+                required
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+              />
+            </div>
+            {error && (
+              <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                {error}
+              </div>
+            )}
+            <Button type="submit" className="w-full" disabled={isResetLoading}>
+              {isResetLoading ? 'Sending...' : 'Send Reset Link'}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -210,9 +210,10 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
   // Copy referral code
   const handleCopyReferralCode = () => {
     if (userData?.referralCode) {
-      navigator.clipboard.writeText(userData.referralCode);
+      const referralLink = `${window.location.origin}/?ref=${userData.referralCode}`;
+      navigator.clipboard.writeText(referralLink);
       setCopied(true);
-      toast.success('Referral code copied!');
+      toast.success('Referral link copied!');
       setTimeout(() => setCopied(false), 2000);
     }
   };
@@ -435,21 +436,33 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
           <TabsContent value="referral" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Your Referral Code</CardTitle>
+                <CardTitle>Your Referral Link</CardTitle>
                 <CardDescription>
-                  Share your code and earn bonuses when friends sign up
+                  Share this link and earn bonuses when friends sign up
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex gap-2">
-                  <Input
-                    value={userData.referralCode}
-                    readOnly
-                    className="font-mono text-lg"
-                  />
-                  <Button onClick={handleCopyReferralCode} variant="outline">
-                    {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-                  </Button>
+                <div>
+                  <Label className="text-sm text-gray-600 mb-2 block">Shareable Link</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={`${window.location.origin}/?ref=${userData.referralCode}`}
+                      readOnly
+                      className="font-mono text-sm"
+                    />
+                    <Button onClick={handleCopyReferralCode} variant="outline">
+                      {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+                    </Button>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm text-gray-600 mb-2 block">Your Referral Code</Label>
+                  <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 text-center">
+                    <p className="text-2xl font-mono tracking-wider text-blue-900">
+                      {userData.referralCode}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="bg-emerald-50 p-4 rounded-lg space-y-2">
