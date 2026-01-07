@@ -157,7 +157,7 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
       const data = await response.json();
 
       if (response.ok) {
-        toast.success(`Mining speed boosted! +$0.000001/sec`);
+        toast.success(`Mining speed boosted! +$0.0000001/sec`);
         setUserData(prev => prev ? {
           ...prev,
           currentMiningRate: data.newMiningRate,
@@ -388,7 +388,7 @@ export function MiningDashboard({ accessToken, userId, onLogout }: MiningDashboa
               <CardHeader>
                 <CardTitle>Watch Ads to Boost Mining</CardTitle>
                 <CardDescription>
-                  Each ad increases your mining speed by $0.000001/sec for 24 hours
+                  Each ad increases your mining speed by $0.0000001/sec for 24 hours
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

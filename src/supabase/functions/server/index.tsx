@@ -107,8 +107,8 @@ app.post("/make-server-4b630b24/signup", async (c) => {
       name,
       balance: 0,
       totalMined: 0,
-      baseMiningRate: 0.000001, // $0.000001/sec
-      currentMiningRate: 0.000001,
+      baseMiningRate: 0.0000001, // $0.0000001/sec
+      currentMiningRate: 0.0000001,
       adsWatchedToday: 0,
       lastAdWatchTime: 0,
       lastResetTime: now,
@@ -233,7 +233,7 @@ app.post("/make-server-4b630b24/watch-ad", async (c) => {
   }
   
   // Increase mining rate
-  userData.currentMiningRate += 0.000001; // +$0.000001/sec per ad
+  userData.currentMiningRate += 0.0000001; // +$0.0000001/sec per ad
   userData.adsWatchedToday += 1;
   userData.lastAdWatchTime = now;
   
