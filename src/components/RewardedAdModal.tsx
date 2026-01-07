@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent } from './ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { X, Volume2, VolumeX } from 'lucide-react';
 import { Progress } from './ui/progress';
@@ -56,6 +56,11 @@ export function RewardedAdModal({ open, onAdComplete, onClose }: RewardedAdModal
         onPointerDownOutside={(e) => !canClose && e.preventDefault()}
         onEscapeKeyDown={(e) => !canClose && e.preventDefault()}
       >
+        <DialogTitle className="sr-only">Rewarded Video Advertisement</DialogTitle>
+        <DialogDescription className="sr-only">
+          Watch this advertisement to earn a mining speed boost
+        </DialogDescription>
+        
         {/* Ad Video Container */}
         <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 aspect-video">
           {/* Simulated Video Content */}
